@@ -9,11 +9,13 @@ def is_spltv_question(text: str) -> bool:
     if not text or not text.strip():
         return False
 
-    # Normalisasi teks
-    text = text.lower()
+    # Normalisasi teks: lower case dan ganti koma dengan newline
+    text = text.lower().replace(',', '\n')
 
     # 1. Cari semua persamaan (mengandung '=')
-    equations = re.findall(r'[^=]+=[^=]+', text)
+    # Gunakan splitlines untuk keamanan lebih baik daripada regex kompleks
+    equations = [line for line in text.split('\n') if '=' in line]
+    
     if len(equations) < 3:
         return False
 
@@ -43,6 +45,9 @@ def extract_spltv_coefficients(text: str):
     Ekstraksi koefisien x, y, z dan konstanta dari SPLTV
     Return: list of dict
     """
+    
+    # Normalisasi: ganti koma dengan newline agar regex bekerja per baris
+    text = text.replace(',', '\n')
 
     equations = re.findall(r'([^\n=]+)=([^\n]+)', text)
 
@@ -58,9 +63,13 @@ def extract_spltv_coefficients(text: str):
 
         # Ambil konstanta (kanan)
         try:
-            eq_data["const"] = int(re.findall(r'-?\d+', right)[0])
+            # Cari angka di ruas kanan
+            const_match = re.search(r'-?\d+', right)
+            if not const_match:
+                 continue # Skip jika tidak ada konstanta
+            eq_data["const"] = int(const_match.group(0))
         except:
-            return None
+            continue
 
         # Normalisasi sisi kiri
         left = left.replace('-', '+-')
@@ -78,11 +87,14 @@ def extract_spltv_coefficients(text: str):
                 elif coef == "-":
                     eq_data[var] = -1
                 else:
-                    eq_data[var] = int(coef)
+                    try:
+                        eq_data[var] = int(coef)
+                    except ValueError:
+                         eq_data[var] = 1 # Fallback mechanism
 
         results.append(eq_data)
 
-    return results
+    return results if len(results) >= 3 else None
 
 def evaluate_spltv_answer(coefficients, student_answer):
     """
