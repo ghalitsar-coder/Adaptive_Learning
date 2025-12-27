@@ -37,3 +37,7 @@ def solve_spltv():
     return jsonify(
         solve_spltv_service(soal_text, konteks)
     )
+
+@soal_bp.route("/ping", methods=["GET"])
+def ping():
+    return {"status": "ok"}

@@ -143,6 +143,7 @@ def evaluate_spltv_answer(coefficients, student_answer):
 def solve_spltv_numpy(coefficients):
     """
     Menyelesaikan SPLTV menggunakan NumPy
+    coefficients: list of dict [{x,y,z,const}, ...]
     """
 
     if not coefficients or len(coefficients) != 3:
@@ -162,10 +163,60 @@ def solve_spltv_numpy(coefficients):
         solution = np.linalg.solve(A, B)
 
         return {
-            "x": round(solution[0], 3),
-            "y": round(solution[1], 3),
-            "z": round(solution[2], 3)
+            "x": round(float(solution[0]), 3),
+            "y": round(float(solution[1]), 3),
+            "z": round(float(solution[2]), 3)
         }
 
     except Exception as e:
+        print("Solver error:", e)
         return None
+    
+# def evaluate_spltv_answer(coefficients, student_answer, tolerance=0.01):
+#     """
+#     Evaluasi jawaban SPLTV siswa
+#     coefficients : dict berisi solusi benar {x, y, z}
+#     student_answer : dict jawaban siswa {x, y, z}
+#     """
+
+#     if not student_answer or not isinstance(student_answer, dict):
+#         return {
+#             "status": "invalid",
+#             "message": "Format jawaban siswa tidak valid"
+#         }
+
+#     correct = coefficients
+#     detail = {}
+#     correct_count = 0
+
+#     for var in ["x", "y", "z"]:
+#         if var not in student_answer:
+#             detail[var] = "tidak dijawab"
+#             continue
+
+#         student_val = float(student_answer[var])
+#         correct_val = float(correct[var])
+
+#         if abs(student_val - correct_val) <= tolerance:
+#             detail[var] = "benar"
+#             correct_count += 1
+#         else:
+#             detail[var] = f"salah (jawaban siswa: {student_val}, seharusnya: {round(correct_val,3)})"
+
+#     # Penilaian akhir
+#     if correct_count == 3:
+#         status = "benar"
+#         feedback = "Jawaban Anda benar. Pertahankan!"
+#     elif correct_count == 0:
+#         status = "salah"
+#         feedback = "Semua variabel salah. Perlu mengulang konsep SPLTV."
+#     else:
+#         status = "sebagian benar"
+#         feedback = "Sebagian jawaban benar, periksa kembali langkah perhitungan."
+
+#     return {
+#         "status": status,
+#         "correct_count": correct_count,
+#         "detail": detail,
+#         "feedback": feedback
+#     }
