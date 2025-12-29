@@ -99,15 +99,14 @@ def extract_spltv_coefficients(text: str):
 def evaluate_spltv_answer(coefficients, student_answer):
     """
     Evaluasi jawaban siswa terhadap SPLTV
-
     coefficients: list of dict [{x,y,z,const}, ...]
     student_answer: dict {"x": int, "y": int, "z": int}
     """
 
     try:
-        x = int(student_answer.get("x"))
-        y = int(student_answer.get("y"))
-        z = int(student_answer.get("z"))
+        x = float(student_answer.get("x"))
+        y = float(student_answer.get("y"))
+        z = float(student_answer.get("z"))
     except:
         return {
             "valid": False,
@@ -116,6 +115,9 @@ def evaluate_spltv_answer(coefficients, student_answer):
 
     results = []
 
+    # Tolerance for float comparison
+    epsilon = 0.5
+
     for idx, eq in enumerate(coefficients):
         left_value = (
             eq["x"] * x +
@@ -123,7 +125,7 @@ def evaluate_spltv_answer(coefficients, student_answer):
             eq["z"] * z
         )
 
-        is_correct = left_value == eq["const"]
+        is_correct = abs(left_value - eq["const"]) < epsilon
 
         results.append({
             "persamaan_ke": idx + 1,

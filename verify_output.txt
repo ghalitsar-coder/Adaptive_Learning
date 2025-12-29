@@ -1,0 +1,14 @@
+Soal: 2x+3y+z=19, x+2y+3z=14, 3x+y+2z=20
+Coefficients: [{'x': 2, 'y': 3, 'z': 1, 'const': 19}, {'x': 1, 'y': 2, 'z': 3, 'const': 14}, {'x': 3, 'y': 1, 'z': 2, 'const': 20}]
+
+Evaluating Wrong Answer: {'x': 2, 'y': 2, 'z': 2}
+Eq 1: 2*2 + 3*2 + 1*2 = 12. Target: 19. Correct? False
+Eq 2: 1*2 + 2*2 + 3*2 = 12. Target: 14. Correct? False
+Eq 3: 3*2 + 1*2 + 2*2 = 12. Target: 20. Correct? False
+Result: False
+
+Evaluating Answer 2: {'x': 4.94, 'y': 2.61, 'z': 1.28}
+Eq 1: 2*4 + 3*2 + 1*1 = 15. Target: 19. Correct? False
+Eq 2: 1*4 + 2*2 + 3*1 = 11. Target: 14. Correct? False
+Eq 3: 3*4 + 1*2 + 2*1 = 16. Target: 20. Correct? False
+Result: False
